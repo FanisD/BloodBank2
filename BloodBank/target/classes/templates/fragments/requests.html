@@ -1,0 +1,96 @@
+<requests xmlns:sec="http://www.w3.org/1999/xhtml" sec:authorize="hasRole('USER')">
+    <div th:if="${not#lists.isEmpty(requests)}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Age</th>
+                <th>Blood Type</th>
+                <th>Living Area</th>
+                <th>Phone Number</th>
+                <th>Last Donation</th>
+                <th>Blood Test</th>
+                <th>Status</th>
+                <th>Condition</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="request : ${requests}" th:if="${(request.UserEmail).equals(#authentication.name)}">
+                <td th:text="${request.FirstName}"></td>
+                <td th:text="${request.LastName}"></td>
+                <td th:text="${request.Age}"></td>
+                <td th:text="${request.BloodType}"></td>
+                <td th:text="${request.LivingArea}"></td>
+                <td th:text="${request.PhoneNumber}"></td>
+                <td th:text="${request.LastDonationDate}"></td>
+                <td><a class="btn btn-primary" th:href="@{/bloodtest/{id}(id=${request.id})}">Blood Test</a></td>
+                <td th:text="${request.Status}"></td>
+                <td th:if="${request.Ready == true}">Ready to donate</td>
+                <td th:if="${request.Ready == false}">Not Ready to donate</td>
+                <div th:if="${request.Status == 'Not Checked'}">
+                    <td th:if="${request.id}"><a class="btn btn-info" th:href="@{/request/{request_id}(request_id=${request.id})}">Edit</a>
+                        <button type="button" class="btn btn-danger" th:id="${request.id}"
+                                name="deleteRequest"><i class="remove user icon"></i>
+                            Delete</button>
+                    </td>
+                </div>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div >
+        <a href="/request/new" class="btn btn-primary" role="button">Become a donor</a>
+    </div>
+    <script type="text/javascript">
+        $("[name='deleteRequest']").click(function() {
+            var urlCall = "/request/";
+            $.ajax({
+                url : urlCall + $(this).attr('id'),
+                type : 'DELETE',
+                success : function(result) {
+                    console.log(result);
+                    $(location).attr("href", value="/request");
+                },
+                error : function(result) {
+                    console.log(result);S
+                },
+            });
+        });
+    </script>
+</requests>
+
+
+<requests xmlns:sec="http://www.w3.org/1999/xhtml" sec:authorize="hasRole('ADMIN')">
+    <div th:if="${not#lists.isEmpty(requests)}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Age</th>
+                <th>Blood Type</th>
+                <th>Living Area</th>
+                <th>Phone Number</th>
+                <th>Last Donation</th>
+                <th>Blood Test</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="request : ${requests}">
+                <td th:text="${request.FirstName}"></td>
+                <td th:text="${request.LastName}"></td>
+                <td th:text="${request.Age}"></td>
+                <td th:text="${request.BloodType}"></td>
+                <td th:text="${request.LivingArea}"></td>
+                <td th:text="${request.PhoneNumber}"></td>
+                <td th:text="${request.LastDonationDate}"></td>
+                <td><a class="btn btn-primary" th:href="@{/bloodtest/{id}(id=${request.id})}">Blood Test</a></td>
+                <td th:text="${request.Status}"></td>
+                <td th:if="${request.id}"><a class="btn btn-info" th:href="@{/request/{request_id}(request_id=${request.id})}">Edit</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</requests>
